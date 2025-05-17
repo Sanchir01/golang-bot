@@ -1,6 +1,10 @@
 package app
 
 import (
+	"fmt"
+	"os"
+
+	cfg "github.com/Sanchir01/kafka-tg/internal/config"
 	"github.com/go-telegram/bot"
 )
 
@@ -10,14 +14,15 @@ type Env struct {
 }
 
 func NewENV() (*Env, error) {
+	con := cfg.InitConfig()
 
+	fmt.Println("cfg", con)
 	opts := []bot.Option{}
-
-	b, err := bot.New("7829990527:AAHaVWh16TQoNI7AiYPR-VwA-jFc-PxtvwA", opts...)
+	b, err := bot.New(os.Getenv("TOKEN"), opts...)
 	if err != nil {
 		return nil, err
 	}
-	kafkaReader, err := NewConsumer("test-topic", "localhost:9092", b)
+	kafkaReader, err := NewConsumer(con.KafkaConsumer.Consumer.Topic, con.KafkaConsumer.Consumer.Broker[0], con.KafkaConsumer.Consumer.GroupID, b)
 	if err != nil {
 		return nil, err
 	}

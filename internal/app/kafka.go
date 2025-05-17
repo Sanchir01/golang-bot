@@ -20,11 +20,11 @@ type KafkaConsumer struct {
 	bot    *bot.Bot
 }
 
-func NewConsumer(topic, broker string, b *bot.Bot) (*KafkaConsumer, error) {
+func NewConsumer(topic, broker, groupId string, b *bot.Bot) (*KafkaConsumer, error) {
 	cfg := kafka.ReaderConfig{
 		Brokers: []string{broker},
 		Topic:   topic,
-		GroupID: "order.tg",
+		GroupID: groupId,
 	}
 	reader := kafka.NewReader(cfg)
 
