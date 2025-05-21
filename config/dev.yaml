@@ -3,7 +3,7 @@ env: "development"
 
 kafka:
   consumer:
-    topic: "order"
+    topic: "order-topic"
     group_id: "order.tg"
     brokers:
       - "localhost:9092"
