@@ -1,0 +1,11 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "11011:11011"
+    command: make run
+    restart: always
+volumes:
+  app:
