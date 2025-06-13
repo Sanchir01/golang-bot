@@ -6,13 +6,21 @@ RUN apk --no-cache add bash git make gcc gettext musl-dev
 
 RUN go version
 
-RUN go install github.com/air-verse/air@latest
-
-COPY . .
+COPY go.mod go.sum ./
 
 RUN go mod download
 
-RUN go build -o .bin/main cmd/main/main.go
+COPY . .
+
+RUN make build
+
+FROM alpine:3.20 AS runner
+
+WORKDIR /app
+
+COPY --from=builder /app/.bin/main /
+
+COPY config config
 
 
-ENTRYPOINT ["make", "run"]
+CMD ["/main"]
