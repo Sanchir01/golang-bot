@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 
 	cfg "github.com/Sanchir01/kafka-tg/internal/config"
@@ -9,25 +10,25 @@ import (
 )
 
 type Env struct {
-	Reader *KafkaConsumer
-	Bot    *bot.Bot
+	Bot     *bot.Bot
+	Log     *slog.Logger
+	GRPCSrv *App
 }
 
 func NewENV() (*Env, error) {
-	con := cfg.InitConfig()
+	cfg := cfg.InitConfig()
+	fmt.Println("cfg", cfg)
+	lg := SetupLogger(cfg.Env)
 
-	fmt.Println("cfg", con)
 	opts := []bot.Option{}
 	b, err := bot.New(os.Getenv("TOKEN"), opts...)
 	if err != nil {
 		return nil, err
 	}
-	kafkaReader, err := NewConsumer(con.KafkaConsumer.Consumer.Topic, con.KafkaConsumer.Consumer.Broker[0], con.KafkaConsumer.Consumer.GroupID, b)
-	if err != nil {
-		return nil, err
-	}
+	gRPCServer := New(lg, ":"+cfg.GRPC.Port, b)
 	return &Env{
-		Reader: kafkaReader,
-		Bot:    b,
+		GRPCSrv: gRPCServer,
+		Log:     lg,
+		Bot:     b,
 	}, nil
 }

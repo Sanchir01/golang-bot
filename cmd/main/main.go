@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/Sanchir01/kafka-tg/internal/app"
 	"os"
 	"os/signal"
@@ -18,11 +17,7 @@ func main() {
 	defer cancel()
 
 	go func() {
-		fmt.Println("✅ Kafka consumer started")
-		if err := env.Reader.Consume(ctx); err != nil {
-			fmt.Printf("Kafka consumer error: %v\n", err)
-			cancel()
-		}
+		env.GRPCSrv.MustStart()
 	}()
 	env.Bot.Start(ctx)
 }

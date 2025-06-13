@@ -1,16 +1,19 @@
 package config
 
 import (
+	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/joho/godotenv"
 	"log"
 	"log/slog"
 	"os"
+	"time"
 )
 
 type Config struct {
-	Env           string       `yaml:"env"`
+	Env           string       `yaml:"env" ,required:"true"`
 	KafkaConsumer KafkaBrokers `yaml:"kafka"`
+	GRPC          GRPC         `yaml:"grpc" ,required:"true"`
 }
 
 type KafkaBrokers struct {
@@ -21,9 +24,19 @@ type Consumer struct {
 	Broker  []string `yaml:"brokers"`
 	GroupID string   `yaml:"group_id"`
 }
+type GRPC struct {
+	Port    string        `yaml:"port" required:"true"`
+	Host    string        `yaml:"host" required:"true"`
+	Timeout time.Duration `yaml:"timeout" required:"true"`
+}
 
 func InitConfig() *Config {
-	if err := godotenv.Load(".env"); err != nil {
+	envFile := os.Getenv("ENV_FILE")
+	if envFile == "" {
+		envFile = ".env.dev"
+	}
+	fmt.Println("env name", envFile)
+	if err := godotenv.Load(envFile); err != nil {
 		slog.Error("ошибка при инициализации переменных окружения", err.Error())
 	}
 	configPath := os.Getenv("CONFIG_PATH")

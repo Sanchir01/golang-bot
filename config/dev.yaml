@@ -1,9 +1,12 @@
 env: "development"
 
+grpc:
+  port: "11011"
+  timeout: 360s
 
 kafka:
   consumer:
     topic: "order-topic"
-    group_id: "order.tg"
+    group_id: "order.sendtg"
     brokers:
       - "localhost:9092"

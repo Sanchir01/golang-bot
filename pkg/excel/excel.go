@@ -2,12 +2,12 @@ package excel
 
 import (
 	"fmt"
-	"github.com/Sanchir01/kafka-tg/internal/entity"
+	"github.com/Sanchir01/kafka-tg/internal/domain"
 
 	"github.com/xuri/excelize/v2"
 )
 
-func CreateFileExcel(products []entity.ProductWithQuantity, filePath, sheetName string) error {
+func CreateFileExcel(products []domain.ProductWithQuantity, filePath, sheetName string) error {
 	f := excelize.NewFile()
 
 	f.SetSheetName(f.GetSheetName(0), sheetName)
@@ -45,6 +45,7 @@ func CreateFileExcel(products []entity.ProductWithQuantity, filePath, sheetName 
 			return fmt.Errorf("failed to set product quantity price: %v", err)
 		}
 		maxLength[3] = max(maxLength[3], len(fmt.Sprintf("%d", totalPrice)))
+		var totalOrderPrice int32 = 0
 		totalOrderPrice += totalPrice
 	}
 	totalRow := len(products) + 2

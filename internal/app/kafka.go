@@ -8,7 +8,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/Sanchir01/kafka-tg/internal/entity"
+	"github.com/Sanchir01/kafka-tg/internal/domain"
 	"github.com/Sanchir01/kafka-tg/pkg/excel"
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
@@ -52,7 +52,7 @@ func (kc *KafkaConsumer) Consume(ctx context.Context) error {
 				continue
 			}
 
-			var candles []entity.ProductWithQuantity
+			var candles []domain.ProductWithQuantity
 			if err := json.Unmarshal(msg.Value, &candles); err != nil {
 				log.Printf("⚠️ Failed to unmarshal JSON: %v", err)
 				continue
